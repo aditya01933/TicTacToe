@@ -1,8 +1,9 @@
 class Board
-	attr_accessor :size
+	attr_accessor :size, :grid
 
 	def initialize(n)
 		@size = n
+		@grid = position_with_value
 	end
 
 	def display_instruction
@@ -30,11 +31,14 @@ class Board
 
 	# Create a grid(board) hash.
 	def position_with_value
-		positions = {}
-		1.upto(self.size*self.size) do |n|
-			positions[n] = " "
+		def self.position_with_value
+			@positions
 		end
-		positions
+		@positions = {}
+		1.upto(self.size*self.size) do |n|
+			@positions[n] = " "
+		end
+		@positions
 	end
 
 end

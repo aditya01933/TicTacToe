@@ -1,11 +1,9 @@
 require_relative "dependencies"
 class TicTacToe
-  	attr_reader :x_player, :o_player, :board
+  	attr_reader :player, :robot, :board
 
   	def initialize(n)
   		@board = Board.new(n)
-  		@x_player =  Player.new("X")
-  		@o_player = Player.new("O")
   	end
 
   	# To start the game.
@@ -18,18 +16,37 @@ class TicTacToe
       end
   	end
 
+  	# To play turn.
+  	def play(current_player)
+  		if current_player == player
+  			players_move
+  		else
+  			robots_move
+  		end
+  	end
+
   	#To find next player.
   	def next_of current_player
-  		if current_player == self.x_player          
-        self.o_player
+  		if current_player == self.player          
+        self.robot
       else
-        self.x_player	
+        self.player	
       end
   	end
 
-  	# To play turn.
-  	def play(current_player)
-  		
+  	def players_move
+	  	loop do 	
+	  		puts "Where do want to move? <1-#{self.board.size}>: "
+	  		position = gets.chomp
+	  		if [1..(self.board.size)].include? position
+	  			puts "\nInvalid input, Please choose number between 1 to 9\n"
+	  		elsif %w{X O}.include? board.grid[position]	
+	  			puts "\nPosition already occupied, Please choose another number...\n"
+	  		else
+	  			self.player.move board
+	  			break
+	  		end
+	  	end
   	end
 
   	private
@@ -37,10 +54,12 @@ class TicTacToe
   		def select_first_player
   			print "Do you want to play first? <y/n>: "
   			ans = gets.chomp
-  			if %w[N n].include?(ans)
-  	      self.o_player
+  			if %w[Y y].include?(ans)
+  	      @robot = Player.new("X")
+  	      @player =  Player.new("O")
   	    else
-  	      self.x_player
+  	    	@player =  Player.new("X")
+  	      @robot = Player.new("O")
   	    end
   		end
 

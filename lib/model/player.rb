@@ -4,5 +4,9 @@ class Player
 	def initialize(symbol)
 		@symbol = symbol
 	end
+
+	def move board, position
+		board.grid[position] = self.symbol
+	end
 	
 end
