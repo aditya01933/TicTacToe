@@ -34,15 +34,12 @@ class TicTacToe
       end
   	end
 
+  	#player's move
   	def players_move
 	  	loop do 	
 	  		puts "Where do want to move? <1-#{self.board.size}>: "
 	  		position = gets.chomp
-	  		if [1..(self.board.size)].include? position
-	  			puts "\nInvalid input, Please choose number between 1 to 9\n"
-	  		elsif %w{X O}.include? board.grid[position]	
-	  			puts "\nPosition already occupied, Please choose another number...\n"
-	  		else
+	  		if valid? position
 	  			self.player.move board
 	  			break
 	  		end
@@ -50,6 +47,17 @@ class TicTacToe
   	end
 
   	private
+  		def valid? position
+  			if [1..(self.board.size)].include? position
+  				puts "\nInvalid input, Please choose number between 1 to 9\n"
+  				return false
+  			elsif %w{X O}.include? board.grid[position]	
+  				puts "\nPosition already occupied, Please choose another number...\n"
+  				return false
+  			end
+  			return true
+  		end
+
   		# To select first player.
   		def select_first_player
   			print "Do you want to play first? <y/n>: "
