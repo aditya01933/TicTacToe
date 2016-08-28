@@ -10,10 +10,11 @@ class TicTacToe
   	def start
   		self.board.display_instruction
   		current_player = select_first_player
-  		self.board.size.each do 
+  		(self.board.size).times do 
   			play(current_player)
   			current_player = next_of current_player 
       end
+      display_winner(nil, true)
   	end
 
   	# To play turn.
@@ -36,22 +37,66 @@ class TicTacToe
 
   	#player's move
   	def players_move
-	  	loop do 	
-	  		puts "Where do want to move? <1-#{self.board.size}>: "
+	  	loop do 	  		
 	  		position = gets.chomp
-	  		if valid? position
-	  			self.player.move board
+	  		if valid? position  		
+	  			self.player.move board, position, self
 	  			break
 	  		end
 	  	end
   	end
 
+  	#Robot's move
+  	def robots_move
+  		robot.best_move self.board, self
+  	end
+
+  	def check_winner(board)
+  	  x_count = 0
+  	  o_count = 0
+  	  board.winning_places.each do |winning_place|
+  	    winning_place.each do |index|
+  	      if board.position_with_value["#{index}"] == "X"
+  	        x_count = x_count + 1
+  	      elsif board.position_with_value["#{index}"] == "O"
+  	        o_count = o_count + 1
+  	      end
+  	    end
+  	    if x_count == 3 or o_count == 3
+  	      break
+  	    else
+  	      x_count = 0
+  	      o_count = 0
+  	    end
+  	  end
+  	  if x_count == 3
+  	    return "X won"
+  	  elsif o_count == 3
+  	    return "O won"
+  	  end
+  	  return "No One"
+  	end
+
+  	def display_winner(symbol, draw = false)
+  	    puts "\n*************| Result |*************"
+  	    if symbol == "X"
+  	      puts "X-won the game\n\n"
+  	    elsif draw == true
+  	      puts "game is draw\n\n"	  
+  	    else
+  	      puts "O-won the game \n\n"
+  	    end
+  	    exit
+  	  end
+
   	private
   		def valid? position
+  			p [1..(self.board.size)]
+  			p %w{X, x, o, O}
   			if [1..(self.board.size)].include? position
   				puts "\nInvalid input, Please choose number between 1 to 9\n"
   				return false
-  			elsif %w{X O}.include? board.grid[position]	
+  			elsif %w{X, x, o, O}.include? board.position_with_value[position]	
   				puts "\nPosition already occupied, Please choose another number...\n"
   				return false
   			end
@@ -72,3 +117,5 @@ class TicTacToe
   		end
 
 end
+
+TicTacToe.new(3).start
